@@ -1,0 +1,110 @@
+
+<div class="min-h-screen flex flex-col p-4 sm:p-6 lg:p-8 font-sans">
+  <!-- Header -->
+  <header class="w-full max-w-4xl mx-auto text-center mb-8">
+    <div class="flex items-center justify-center gap-4">
+      <i class="fa-solid fa-headphones-simple text-4xl text-indigo-400"></i>
+      <h1 class="text-4xl sm:text-5xl font-bold text-slate-100">
+        Shruti <span class="text-indigo-400">Summaries</span>
+      </h1>
+    </div>
+    <p class="mt-4 text-lg text-slate-400">
+      Your personal audio news brief. Paste an article, and listen on the go.
+    </p>
+  </header>
+
+  <!-- Main Content -->
+  <main class="w-full max-w-4xl mx-auto flex-grow flex flex-col gap-6">
+    <!-- Input Section -->
+    <div class="bg-slate-800/50 p-6 rounded-2xl shadow-lg border border-slate-700">
+      <label for="article-text" class="block mb-3 text-lg font-medium text-slate-300">
+        Paste your news article here
+      </label>
+      <textarea
+        id="article-text"
+        [ngModel]="articleText()"
+        (ngModelChange)="articleText.set($event)"
+        rows="10"
+        placeholder="Enter the full text of the article (minimum 100 characters)..."
+        class="w-full p-4 bg-slate-900 border border-slate-600 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200 text-slate-200 placeholder-slate-500 resize-y"
+      ></textarea>
+      <div class="mt-4 flex justify-end">
+        <button
+          (click)="generateSummaryAndPlay()"
+          [disabled]="!canGenerate()"
+          class="flex items-center justify-center gap-2 px-6 py-3 font-semibold text-white bg-indigo-600 rounded-lg shadow-md hover:bg-indigo-700 disabled:bg-slate-600 disabled:cursor-not-allowed disabled:opacity-70 transition-all duration-200 transform hover:scale-105 disabled:scale-100"
+        >
+          @if (isLoading()) {
+            <i class="fa-solid fa-spinner fa-spin"></i>
+            <span>Generating...</span>
+          } @else {
+            <i class="fa-solid fa-bolt"></i>
+            <span>Summarize & Listen</span>
+          }
+        </button>
+      </div>
+    </div>
+
+    <!-- Output Section -->
+    <div class="bg-slate-800/50 p-6 rounded-2xl shadow-lg border border-slate-700 min-h-[200px] flex flex-col">
+      @if (isLoading()) {
+        <div class="flex-grow flex flex-col items-center justify-center text-slate-400">
+          <i class="fa-solid fa-brain fa-beat-fade text-4xl mb-4 text-indigo-400"></i>
+          <p class="text-lg font-semibold">Crafting your summary...</p>
+          <p>This might take a moment.</p>
+        </div>
+      } @else if (error()) {
+        <div class="flex-grow flex flex-col items-center justify-center text-red-400 bg-red-900/20 p-4 rounded-lg">
+          <i class="fa-solid fa-circle-exclamation text-4xl mb-4"></i>
+          <p class="text-lg font-semibold">An Error Occurred</p>
+          <p>{{ error() }}</p>
+        </div>
+      } @else if (summary()) {
+        <div class="flex-grow flex flex-col">
+          <h2 class="text-xl font-bold text-indigo-400 mb-4">Audio Summary</h2>
+          <div class="flex items-center justify-center gap-4 mb-4 p-4 bg-slate-900 rounded-lg">
+            <button
+              (click)="isPlaying() ? pauseAudio() : playAudio()"
+              class="w-16 h-16 flex items-center justify-center text-3xl bg-indigo-600 rounded-full text-white hover:bg-indigo-500 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-indigo-500"
+              aria-label="Play/Pause"
+            >
+              @if (isPlaying()) {
+                <i class="fa-solid fa-pause"></i>
+              } @else {
+                <i class="fa-solid fa-play"></i>
+              }
+            </button>
+            <button
+              (click)="stopAudio()"
+              class="w-12 h-12 flex items-center justify-center text-xl bg-slate-700 rounded-full text-slate-200 hover:bg-slate-600 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-slate-500"
+              aria-label="Stop"
+            >
+              <i class="fa-solid fa-stop"></i>
+            </button>
+          </div>
+          <p class="text-slate-300 leading-relaxed">{{ summary() }}</p>
+        </div>
+      } @else {
+        <div class="flex-grow flex flex-col items-center justify-center text-slate-500">
+          <i class="fa-solid fa-ear-listen text-4xl mb-4"></i>
+          <p class="text-lg">Your audio summary will appear here.</p>
+        </div>
+      }
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="w-full max-w-4xl mx-auto text-center mt-8 pt-4 border-t border-slate-700">
+    <p class="text-slate-400">
+      Made by Sourish Dey | 
+      <button (click)="togglePrivacy(true)" class="text-indigo-400 hover:underline">
+        Privacy Policy
+      </button>
+    </p>
+  </footer>
+
+</div>
+
+@if (showPrivacy()) {
+  <app-privacy-policy (close)="togglePrivacy(false)"></app-privacy-policy>
+}

@@ -1,0 +1,52 @@
+
+<div class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4" (click)="onClose()">
+  <div class="bg-slate-800 w-full max-w-2xl rounded-2xl shadow-xl border border-slate-700 p-6 sm:p-8 text-slate-300" (click)="$event.stopPropagation()">
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-2xl font-bold text-indigo-400">Privacy Policy</h2>
+      <button (click)="onClose()" class="text-slate-400 hover:text-white transition-colors">
+        <i class="fa-solid fa-xmark text-2xl"></i>
+      </button>
+    </div>
+    
+    <div class="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+      <p><strong>Last Updated:</strong> July 25, 2024</p>
+      
+      <p>Welcome to Shruti Summaries. Your privacy is important to us. This Privacy Policy explains how we handle your information.</p>
+
+      <h3 class="text-xl font-semibold text-slate-100 pt-2">1. Information We Handle</h3>
+      <p>
+        We do not collect, store, or transmit any personal information. The application processes the news article text you provide solely for the purpose of generating a summary.
+      </p>
+      <ul class="list-disc list-inside space-y-2 pl-4">
+        <li><strong>Article Text:</strong> The text you paste into the application is sent to the Google Gemini API for processing. We do not log or store this text on our servers. It is handled in-memory and discarded after the summary is generated.</li>
+        <li><strong>API Key:</strong> This application uses an API key configured in its environment to communicate with the Google Gemini API. Your personal API key is not required or collected.</li>
+      </ul>
+
+      <h3 class="text-xl font-semibold text-slate-100 pt-2">2. How Information is Used</h3>
+      <p>
+        The article text you provide is used exclusively to generate a summary. The text is sent to the Google Gemini API, which processes it and returns a summary. The summary is then displayed in the app and used for text-to-speech playback on your device.
+      </p>
+      
+      <h3 class="text-xl font-semibold text-slate-100 pt-2">3. Data Storage</h3>
+      <p>
+        This application is stateless. It does not have a database and does not store any of your data. All processing happens on-demand, and the information is not retained after you close the application session.
+      </p>
+      
+      <h3 class="text-xl font-semibold text-slate-100 pt-2">4. Third-Party Services</h3>
+      <p>
+        We use the Google Gemini API to process content. Your interaction with this third-party service is governed by Google's Privacy Policy. We are not responsible for their data handling practices.
+      </p>
+
+      <h3 class="text-xl font-semibold text-slate-100 pt-2">5. Changes to This Policy</h3>
+      <p>
+        We may update this Privacy Policy from time to time. Any changes will be reflected by an updated "Last Updated" date.
+      </p>
+
+      <div class="mt-8 text-right">
+        <button (click)="onClose()" class="px-6 py-2 font-semibold text-white bg-indigo-600 rounded-lg shadow-md hover:bg-indigo-700 transition-colors duration-200">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

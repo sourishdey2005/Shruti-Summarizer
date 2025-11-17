@@ -1,0 +1,5 @@
+{
+  "name": "Shruti Summaries",
+  "description": "Creates personalized audio summaries of news articles you provide, so you can listen on your commute. Simply paste an article, and Shruti Summaries will generate a concise summary and read it aloud for you.",
+  "requestFramePermissions": []
+}
