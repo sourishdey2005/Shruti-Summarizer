@@ -1,20 +1,16 @@
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 
-import { Injectable } from '@angular/core';
-import { GoogleGenAI, GenerateContentResponse } from '@google/genai';
+interface SummaryResponse {
+  summary: string;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class GeminiService {
-  private ai: GoogleGenAI;
-
-  constructor() {
-    // IMPORTANT: This relies on `process.env.API_KEY` being set in the execution environment.
-    if (!process.env.API_KEY) {
-      throw new Error("API_KEY environment variable not set");
-    }
-    this.ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  }
+  private readonly http = inject(HttpClient);
 
   async generateSummary(articleText: string): Promise<string> {
     if (!articleText) {
@@ -22,22 +18,19 @@ export class GeminiService {
     }
 
     try {
-      const prompt = `Summarize the following news article for a commuter who wants a quick audio briefing. The summary should be concise, easy to understand when spoken aloud, and capture the main points of the article. Focus on clarity and flow. Avoid complex sentences and jargon. Here is the article:\n\n---\n\n${articleText}`;
+      // Call our Vercel serverless function, which acts as a secure proxy.
+      const response = await firstValueFrom(
+        this.http.post<SummaryResponse>('/api/summarize', { articleText })
+      );
 
-      const response: GenerateContentResponse = await this.ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: prompt,
-      });
-
-      const summaryText = response.text;
-      if (!summaryText) {
-        throw new Error('Received an empty summary from the API.');
+      if (!response?.summary) {
+        throw new Error('Received an invalid summary from the server.');
       }
-      return summaryText;
+      return response.summary;
     } catch (error) {
-      console.error('Error generating summary with Gemini API:', error);
-      // Re-throw the error to be handled by the component
-      throw new Error('Failed to communicate with the AI model.');
+      console.error('Error fetching summary from backend:', error);
+      // Let the component know something went wrong.
+      throw new Error('Failed to communicate with the summarization service.');
     }
   }
 }
