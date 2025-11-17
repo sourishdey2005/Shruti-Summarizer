@@ -1,0 +1,4 @@
+{
+  "framework": null,
+  "buildCommand": "echo 'Static assets only, no build command needed. Serverless functions in /api will be built automatically.'"
+}
