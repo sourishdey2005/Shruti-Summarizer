@@ -18,6 +18,7 @@ export class AppComponent implements OnDestroy {
   isLoading = signal<boolean>(false);
   error = signal<string | null>(null);
   showPrivacy = signal<boolean>(false);
+  shareStatus = signal<'idle' | 'copied'>('idle');
 
   // Text-to-Speech state
   isPlaying = signal<boolean>(false);
@@ -120,6 +121,38 @@ export class AppComponent implements OnDestroy {
     const synth = window.speechSynthesis;
     if (synth) {
       synth.cancel(); // Also triggers 'onend' event
+    }
+  }
+
+  async shareSummary() {
+    const summaryText = this.summary();
+    if (!summaryText) return;
+
+    const shareData = {
+      title: 'Shruti Summary',
+      text: summaryText,
+      url: window.location.href,
+    };
+
+    try {
+      // Use Web Share API if available
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        // Fallback to clipboard for desktop browsers
+        await navigator.clipboard.writeText(summaryText);
+        this.shareStatus.set('copied');
+        setTimeout(() => this.shareStatus.set('idle'), 2000);
+      }
+    } catch (err) {
+      // This can happen if the user cancels the share dialog, so we'll just log it.
+      console.error('Could not share summary:', err);
+      // As a final fallback, try to copy to clipboard if the share API failed
+      if (typeof navigator.clipboard?.writeText === 'function') {
+        await navigator.clipboard.writeText(summaryText);
+        this.shareStatus.set('copied');
+        setTimeout(() => this.shareStatus.set('idle'), 2000);
+      }
     }
   }
 

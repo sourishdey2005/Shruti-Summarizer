@@ -81,6 +81,18 @@
             >
               <i class="fa-solid fa-stop"></i>
             </button>
+            <button
+              (click)="shareSummary()"
+              [disabled]="shareStatus() === 'copied'"
+              class="w-12 h-12 flex items-center justify-center text-xl bg-slate-700 rounded-full text-slate-200 hover:bg-slate-600 disabled:bg-green-600 disabled:cursor-default transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-slate-500"
+              aria-label="Share Summary"
+            >
+              @if (shareStatus() === 'copied') {
+                <i class="fa-solid fa-check"></i>
+              } @else {
+                <i class="fa-solid fa-share-nodes"></i>
+              }
+            </button>
           </div>
           <p class="text-slate-300 leading-relaxed">{{ summary() }}</p>
         </div>
